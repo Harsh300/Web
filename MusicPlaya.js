@@ -52,6 +52,7 @@ function renderSearchResultItem(item) {
       //console.log('#linkButton'.value);
       // OnClick LinkButton
       $('#0').unbind().click(function() {
+        $('#YouTubeResult').html('');
     console.log("GOT HERE");
     console.log(item.id);
     var useThis = this.value;
@@ -60,6 +61,7 @@ function renderSearchResultItem(item) {
     $('#YoutubeResult').append(renderVideoPlayback(itemIdOfNumber));
     });
     $('#1').unbind().click(function() {
+      $('#YouTubeResult').html('');
     console.log("GOT HERE");
     console.log(item.id);
     var useThis = this.value;
@@ -68,6 +70,7 @@ function renderSearchResultItem(item) {
     $('#YoutubeResult').append(renderVideoPlayback(itemIdOfNumber));
     });
     $('#2').unbind().click(function() {
+      $('#YouTubeResult').html('');
     console.log("GOT HERE");
     console.log(item.id);
     var useThis = this.value;
@@ -76,6 +79,7 @@ function renderSearchResultItem(item) {
     $('#YoutubeResult').append(renderVideoPlayback(itemIdOfNumber));
     });
     $('#3').unbind().click(function() {
+      $('#YouTubeResult').html('');
     console.log("GOT HERE");
     console.log(item.id);
     var useThis = this.value;
@@ -84,6 +88,7 @@ function renderSearchResultItem(item) {
     $('#YoutubeResult').append(renderVideoPlayback(itemIdOfNumber));
     });
     $('#4').unbind().click(function() {
+      $('#YouTubeResult').html('');
     console.log("GOT HERE");
     console.log(item.id);
     var useThis = this.value;
@@ -95,8 +100,8 @@ function renderSearchResultItem(item) {
     //get the position of that element!
     //use that position value as the value of the button it is creating!
     //onlick will get the value of the button and go through the array to get to that postion and play that video
-      // $('subYoutube').append('<li><a "http://www.youtube.com/v/' + item.id.videoId +
-      // '">' + item.snippet.title + '</a><button id=' + number + '; value=' + number + '>Watch this Video</button></li>');
+      $('subYoutube').append('<li><a "http://www.youtube.com/v/' + item.id.videoId +
+       '">' + item.snippet.title + '</a><button id="' + number + '"; value=' + number + '>Watch this Video</button></li>');
       return '<li><a "http://www.youtube.com/v/' + item.id.videoId +
       '">' + item.snippet.title + '</a><button id="' + number + '"; value=' + number + '>Watch this Video</button></li>';
 
