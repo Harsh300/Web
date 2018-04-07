@@ -3,6 +3,11 @@
 // spotify client secret: 9142b16ac9414109bce395046763280a
 $.support.cors = true;
 
+
+var arr = [];
+var number = -1;
+var i = 1;
+
 $(document).ready(function() {
 	// handler for searching by keyword
 	$('#searchButton').click(function() {
@@ -17,12 +22,15 @@ $(document).ready(function() {
 		// clear any previous search results
 		$('#youTube').html('');
 		//$('#videos').html('');
-
+    
 		// Get the data from the web service and process
     $.getJSON(youtubeSearchURL, function(data) {
         $.each(data.items, function(i,item) {
+            arr.push(item.id);
+            console.log(arr);
             $('#youTube').append(renderSearchResultItem(item));
             //$('#videos').append(renderVideoPlayback(item.id));
+
         });
     });
 		//spotify search section
@@ -35,18 +43,82 @@ $(document).ready(function() {
 		}).then((response)=>response.json()).then(data=>console.log(data));
 
 	});
-});
+
 
 function renderSearchResultItem(item) {
     if (item.id.kind == 'youtube#video') {
-       return '<li><a "http://www.youtube.com/v/' + item.videoId +
-              '">' + item.snippet.title + '</a></li>';
-    } else {
+      number = number + i;
+      //console.log("Making button");
+      //console.log('#linkButton'.value);
+      // OnClick LinkButton
+      $('#0').unbind().click(function() {
+    console.log("GOT HERE");
+    console.log(item.id);
+    var useThis = this.value;
+    var itemIdOfNumber = arr[useThis];
+    
+    $('#YoutubeResult').append(renderVideoPlayback(itemIdOfNumber));
+    });
+    $('#1').unbind().click(function() {
+    console.log("GOT HERE");
+    console.log(item.id);
+    var useThis = this.value;
+    var itemIdOfNumber = arr[useThis];
+    
+    $('#YoutubeResult').append(renderVideoPlayback(itemIdOfNumber));
+    });
+    $('#2').unbind().click(function() {
+    console.log("GOT HERE");
+    console.log(item.id);
+    var useThis = this.value;
+    var itemIdOfNumber = arr[useThis];
+    
+    $('#YoutubeResult').append(renderVideoPlayback(itemIdOfNumber));
+    });
+    $('#3').unbind().click(function() {
+    console.log("GOT HERE");
+    console.log(item.id);
+    var useThis = this.value;
+    var itemIdOfNumber = arr[useThis];
+    
+    $('#YoutubeResult').append(renderVideoPlayback(itemIdOfNumber));
+    });
+    $('#4').unbind().click(function() {
+    console.log("GOT HERE");
+    console.log(item.id);
+    var useThis = this.value;
+    var itemIdOfNumber = arr[useThis];
+    
+    $('#YoutubeResult').append(renderVideoPlayback(itemIdOfNumber));
+    });
+    //append to array!
+    //get the position of that element!
+    //use that position value as the value of the button it is creating!
+    //onlick will get the value of the button and go through the array to get to that postion and play that video
+      // $('subYoutube').append('<li><a "http://www.youtube.com/v/' + item.id.videoId +
+      // '">' + item.snippet.title + '</a><button id=' + number + '; value=' + number + '>Watch this Video</button></li>');
+      return '<li><a "http://www.youtube.com/v/' + item.id.videoId +
+      '">' + item.snippet.title + '</a><button id="' + number + '"; value=' + number + '>Watch this Video</button></li>';
+
+    }
+    else
+    {
         return '';
     }
 }
 
-/*function renderVideoPlayback(id) {
+
+//console.log($('#linkButton').val());
+});
+
+
+
+//onclick button create div to hold the video
+
+  //run the renderVideoPlayback(item.id)
+    //item.ID from list
+
+function renderVideoPlayback(id) {
     if (id.kind == 'youtube#video') {
        var text = '<div>' +
                   '    <embed width="420" height="345" ' +
@@ -57,5 +129,5 @@ function renderSearchResultItem(item) {
         return text;
     } else {
         return '';
-    }*/
-//}
+    }
+}
