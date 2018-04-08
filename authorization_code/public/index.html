@@ -1,141 +1,192 @@
-<!doctype html>
-<html>
-  <head>
-    <title>Example of the Authorization Code flow with Spotify</title>
-    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
-    <style type="text/css">
-      #login, #loggedin {
-        display: none;
-      }
-      .text-overflow {
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-        width: 500px;
-      }
-    </style>
-  </head>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
 
-  <body>
-    <div class="container">
-      <div id="login">
-        <h1>This is an example of the Authorization Code flow</h1>
-        <a href="/login" class="btn btn-primary">Log in with Spotify</a>
-      </div>
-      <div id="loggedin">
-        <div id="user-profile">
-        </div>
-        <div id="oauth">
-        </div>
-        <button class="btn btn-default" id="obtain-new-token">Obtain new token using the refresh token</button>
-      </div>
+  <title>Name TBD</title>
+</head>
+<body>
+  <div id = "PageTitle" class = "title">
+    <h3> NAME TBD</h3>
+  </div>
+  <div id="form">
+    Search Song:
+    <input type="text" name="Search Music" id="Search" value="God's Plan - Drake" />
+    <button id="searchButton">Find</button>
+  </div>
+
+  <div class="container-fluid">
+    <div id="Spotify" class="SY">
+      <a href="/login" class="btn btn-primary">Log in with Spotify</a>
     </div>
+    <div id="youTube" class="YT">
+    </div>
+    <div id="subYoutube" class = "sYT"> </div>
+    <div id="SoundCloud" class="SC"></div>
+    <div id="Twitter" class="Twitter">
+      <div class="wb-twitter">
+            <a class="twitter-timeline"  href="https://twitter.com/hashtag/NewMusic" data-widget-id="983084056677109760">#NewMusic Tweets</a>
+            <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
 
-    <script id="user-profile-template" type="text/x-handlebars-template">
-      <h1>Logged in as {{display_name}}</h1>
-      <div class="media">
-        <div class="pull-left">
-          <img class="media-object" width="150" src="{{images.0.url}}" />
-        </div>
-        <div class="media-body">
-          <dl class="dl-horizontal">
-            <dt>Display name</dt><dd class="clearfix">{{display_name}}</dd>
-            <dt>Id</dt><dd>{{id}}</dd>
-            <dt>Email</dt><dd>{{email}}</dd>
-            <dt>Spotify URI</dt><dd><a href="{{external_urls.spotify}}">{{external_urls.spotify}}</a></dd>
-            <dt>Link</dt><dd><a href="{{href}}">{{href}}</a></dd>
-            <dt>Profile Image</dt><dd class="clearfix"><a href="{{images.0.url}}">{{images.0.url}}</a></dd>
-            <dt>Country</dt><dd>{{country}}</dd>
-          </dl>
-        </div>
-      </div>
-    </script>
+    </div>
+    </div>
+    <div id="YoutubeResult"></div>
+  </div>
+<script>
 
-    <script id="oauth-template" type="text/x-handlebars-template">
-      <h2>oAuth info</h2>
-      <dl class="dl-horizontal">
-        <dt>Access token</dt><dd class="text-overflow">{{access_token}}</dd>
-        <dt>Refresh token</dt><dd class="text-overflow">{{refresh_token}}</dd>
-      </dl>
-    </script>
+var arr = [];
+var number = -1;
+var i = 1;
 
-    <script src="//cdnjs.cloudflare.com/ajax/libs/handlebars.js/2.0.0-alpha.1/handlebars.min.js"></script>
-    <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
-    <script>
-      (function() {
 
-        /**
-         * Obtains parameters from the hash of the URL
-         * @return Object
-         */
-        function getHashParams() {
-          var hashParams = {};
-          var e, r = /([^&;=]+)=?([^&;]*)/g,
-              q = window.location.hash.substring(1);
-          while ( e = r.exec(q)) {
-             hashParams[e[1]] = decodeURIComponent(e[2]);
-          }
-          return hashParams;
-        }
+  // handler for searching by keyword
+  $('#searchButton').click(function() {
 
-        var userProfileSource = document.getElementById('user-profile-template').innerHTML,
-            userProfileTemplate = Handlebars.compile(userProfileSource),
-            userProfilePlaceholder = document.getElementById('user-profile');
+    var keyword = $('#Search').val();
 
-        var oauthSource = document.getElementById('oauth-template').innerHTML,
-            oauthTemplate = Handlebars.compile(oauthSource),
-            oauthPlaceholder = document.getElementById('oauth');
+    //youtube search section
+    var maxResults = 5;
+    var youtubeSearchURL = 'https://www.googleapis.com/youtube/v3/search?part=id%2Csnippet&q=' +
+    escape(keyword) + '&key=AIzaSyBKl-NXWdXHsj6dCYrNRqgU5k5h_bH6Ua8';
 
-        var params = getHashParams();
+    // clear any previous search results
+    $('#youTube').html('');
+    //$('#videos').html('');
 
-        var access_token = params.access_token,
-            refresh_token = params.refresh_token,
-            error = params.error;
+    // Get the data from the web service and process
+    $.getJSON(youtubeSearchURL, function(data) {
+        $.each(data.items, function(i,item) {
+            arr.push(item.id);
+            console.log(arr);
+            $('#youTube').append(renderSearchResultItem(item));
+            //$('#videos').append(renderVideoPlayback(item.id));
 
-        if (error) {
-          alert('There was an error during the authentication');
-        } else {
-          if (access_token) {
-            // render oauth info
-            oauthPlaceholder.innerHTML = oauthTemplate({
-              access_token: access_token,
-              refresh_token: refresh_token
-            });
+        });
+    });
+    //spotify search section
+    var spotifySearchURL = 'https://api.spotify.com/v1/search/';
+    var accessToken = 'BQCwXat8Rg5rq_rWRSedqquuZzb4kQt7ogYtPEjeHKSQ60JSp8GobMtn6kUYtP8lEAueqHOMlDEObZ47fhE659q2Mb7WrlJaPQOPmKm8UD9OpV7rDRSuDRRDssOoznwzbWf56sk7XmWpNsV4EUYaAIOCPE';
 
-            $.ajax({
-                url: 'https://api.spotify.com/v1/me',
-                headers: {
-                  'Authorization': 'Bearer ' + access_token
-                },
-                success: function(response) {
-                  userProfilePlaceholder.innerHTML = userProfileTemplate(response);
+    console.log("Spotify");
+    fetch(spotifySearchURL,{
+      headers:{'Authorization': 'Bearer'+ accessToken}
+    }).then((response)=>response.json()).then(data=>console.log(data));
 
-                  $('#login').hide();
-                  $('#loggedin').show();
-                }
-            });
-          } else {
-              // render initial screen
-              $('#login').show();
-              $('#loggedin').hide();
-          }
+    //Twitter
 
-          document.getElementById('obtain-new-token').addEventListener('click', function() {
-            $.ajax({
-              url: '/refresh_token',
-              data: {
-                'refresh_token': refresh_token
-              }
-            }).done(function(data) {
-              access_token = data.access_token;
-              oauthPlaceholder.innerHTML = oauthTemplate({
-                access_token: access_token,
-                refresh_token: refresh_token
-              });
-            });
-          }, false);
-        }
-      })();
-    </script>
-  </body>
+  window.twttr = (function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0],
+    t = window.twttr || {};
+  if (d.getElementById(id)) return t;
+  js = d.createElement(s);
+  js.id = id;
+  js.src = "https://platform.twitter.com/widgets.js";
+  fjs.parentNode.insertBefore(js, fjs);
+
+  t._e = [];
+  t.ready = function(f) {
+    t._e.push(f);
+  };
+
+  return t;
+}
+(document, "script", "twitter-wjs"));
+
+  });
+
+
+function renderSearchResultItem(item) {
+    if (item.id.kind == 'youtube#video') {
+      number = number + i;
+      //console.log("Making button");
+      //console.log('#linkButton'.value);
+      // OnClick LinkButton
+      $('#0').unbind().click(function() {
+        $('#YouTubeResult').html('');
+    console.log("GOT HERE");
+    console.log(item.id);
+    var useThis = this.value;
+    var itemIdOfNumber = arr[useThis];
+
+    $('#YoutubeResult').append(renderVideoPlayback(itemIdOfNumber));
+    });
+    $('#1').unbind().click(function() {
+      $('#YouTubeResult').html('');
+    console.log("GOT HERE");
+    console.log(item.id);
+    var useThis = this.value;
+    var itemIdOfNumber = arr[useThis];
+
+    $('#YoutubeResult').append(renderVideoPlayback(itemIdOfNumber));
+    });
+    $('#2').unbind().click(function() {
+      $('#YouTubeResult').html('');
+    console.log("GOT HERE");
+    console.log(item.id);
+    var useThis = this.value;
+    var itemIdOfNumber = arr[useThis];
+
+    $('#YoutubeResult').append(renderVideoPlayback(itemIdOfNumber));
+    });
+    $('#3').unbind().click(function() {
+      $('#YouTubeResult').html('');
+    console.log("GOT HERE");
+    console.log(item.id);
+    var useThis = this.value;
+    var itemIdOfNumber = arr[useThis];
+
+    $('#YoutubeResult').append(renderVideoPlayback(itemIdOfNumber));
+    });
+    $('#4').unbind().click(function() {
+      $('#YouTubeResult').html('');
+    console.log("GOT HERE");
+    console.log(item.id);
+    var useThis = this.value;
+    var itemIdOfNumber = arr[useThis];
+
+    $('#YoutubeResult').append(renderVideoPlayback(itemIdOfNumber));
+    });
+    //append to array!
+    //get the position of that element!
+    //use that position value as the value of the button it is creating!
+    //onlick will get the value of the button and go through the array to get to that postion and play that video
+      $('subYoutube').append('<li><a "http://www.youtube.com/v/' + item.id.videoId +
+       '">' + item.snippet.title + '</a><button id="' + number + '"; value=' + number + '>Watch this Video</button></li>');
+      return '<li><a "http://www.youtube.com/v/' + item.id.videoId +
+      '">' + item.snippet.title + '</a><button id="' + number + '"; value=' + number + '>Watch this Video</button></li>';
+
+    }
+    else
+    {
+        return '';
+    }
+}
+
+
+//console.log($('#linkButton').val());
+
+
+
+
+//onclick button create div to hold the video
+
+  //run the renderVideoPlayback(item.id)
+    //item.ID from list
+
+function renderVideoPlayback(id) {
+    if (id.kind == 'youtube#video') {
+       var text = '<div>' +
+                  '    <embed width="420" height="345" ' +
+                  '       src="http://www.youtube.com/v/' + id.videoId + '"' +
+                  '       type="application/x-shockwave-flash">' +
+                  '    </embed>' +
+                  '</div>'
+        return text;
+    } else {
+        return '';
+    }
+}
+
+</script>
+</body>
 </html>

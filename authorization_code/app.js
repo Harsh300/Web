@@ -39,7 +39,9 @@ app.use(express.static(__dirname + '/public'))
    .use(cookieParser());
 
 app.get('/login', function(req, res) {
-
+console.log(
+  "app.js tried login"
+)
   var state = generateRandomString(16);
   res.cookie(stateKey, state);
 

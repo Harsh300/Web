@@ -22,7 +22,7 @@ $(document).ready(function() {
 		// clear any previous search results
 		$('#youTube').html('');
 		//$('#videos').html('');
-    
+
 		// Get the data from the web service and process
     $.getJSON(youtubeSearchURL, function(data) {
         $.each(data.items, function(i,item) {
@@ -41,9 +41,9 @@ $(document).ready(function() {
 		fetch(spotifySearchURL,{
 			headers:{'Authorization': 'Bearer'+ accessToken}
 		}).then((response)=>response.json()).then(data=>console.log(data));
-		
+
 		//Twitter
-		
+
 	window.twttr = (function(d, s, id) {
   var js, fjs = d.getElementsByTagName(s)[0],
     t = window.twttr || {};
@@ -77,7 +77,7 @@ function renderSearchResultItem(item) {
     console.log(item.id);
     var useThis = this.value;
     var itemIdOfNumber = arr[useThis];
-    
+
     $('#YoutubeResult').append(renderVideoPlayback(itemIdOfNumber));
     });
     $('#1').unbind().click(function() {
@@ -86,7 +86,7 @@ function renderSearchResultItem(item) {
     console.log(item.id);
     var useThis = this.value;
     var itemIdOfNumber = arr[useThis];
-    
+
     $('#YoutubeResult').append(renderVideoPlayback(itemIdOfNumber));
     });
     $('#2').unbind().click(function() {
@@ -95,7 +95,7 @@ function renderSearchResultItem(item) {
     console.log(item.id);
     var useThis = this.value;
     var itemIdOfNumber = arr[useThis];
-    
+
     $('#YoutubeResult').append(renderVideoPlayback(itemIdOfNumber));
     });
     $('#3').unbind().click(function() {
@@ -104,7 +104,7 @@ function renderSearchResultItem(item) {
     console.log(item.id);
     var useThis = this.value;
     var itemIdOfNumber = arr[useThis];
-    
+
     $('#YoutubeResult').append(renderVideoPlayback(itemIdOfNumber));
     });
     $('#4').unbind().click(function() {
@@ -113,7 +113,7 @@ function renderSearchResultItem(item) {
     console.log(item.id);
     var useThis = this.value;
     var itemIdOfNumber = arr[useThis];
-    
+
     $('#YoutubeResult').append(renderVideoPlayback(itemIdOfNumber));
     });
     //append to array!
@@ -134,7 +134,7 @@ function renderSearchResultItem(item) {
 
 
 //console.log($('#linkButton').val());
-});
+
 
 
 
