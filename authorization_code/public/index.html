@@ -65,21 +65,33 @@ var i = 1;
         });
     });
     //spotify search section
-    var spotifySearchURL = 'https://api.spotify.com/v1/search/';
-    var accessToken = 'BQCwXat8Rg5rq_rWRSedqquuZzb4kQt7ogYtPEjeHKSQ60JSp8GobMtn6kUYtP8lEAueqHOMlDEObZ47fhE659q2Mb7WrlJaPQOPmKm8UD9OpV7rDRSuDRRDssOoznwzbWf56sk7XmWpNsV4EUYaAIOCPE';
+    var spotifySearchURL = 'https://api.spotify.com/v1/search';
 
     console.log("Spotify");
     var accessToken = window.location.href.split('=')[1].split('&')[0];
 
-    var myOptions = {
+   /* var myOptions = {
       method:'GET',
       headers : { 'Authorization' : 'Bearer '+accessToken},
       mode: 'cors',
       cache: 'default'
+    };*/
+    
+    var myOptions2 = {
+      mehtod: 'GET',
+      headers : {'Authorization' : 'Bearer ' + accessToken},
+      dataType : 'json',
+      data : {
+        q : "God's%20Plan",
+        type : 'track',
+        limit : '1'
+      }
     };
+    
+    var spotifySearchString = spotifySearchURL + "?q=" +"God's%20Plan" + "&type=track&limit=1";
 
-    fetch(spotifySearchURL,myOptions)
-    .then((response)=>response.json()).then();
+    fetch(spotifySearchString,myOptions2)
+    .then((response)=>response.json()).then(console.log("working"));
     
 
     //Twitter
