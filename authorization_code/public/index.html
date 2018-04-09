@@ -18,7 +18,10 @@
   <div class="container-fluid">
     <div id="Spotify" class="SY">
       <a href="/login" class="btn btn-primary">Log in with Spotify</a>
-
+      
+      <video controls="" autoplay="" name="media">
+        <source src="https://p.scdn.co/mp3-preview/3784320bb46e570c7a6a52183fa4a9c40b3e71a5?cid=094a90883cba42faac7a9694612f6b4f" type="audio/mpeg">
+      </video>
 
     </div>
     <div id="youTube" class="YT">
@@ -66,19 +69,13 @@ var i = 1;
     });
     //spotify search section
     var spotifySearchURL = 'https://api.spotify.com/v1/search';
-    var data = '';
     var trackID = '';
     
 
     console.log("Spotify");
     var accessToken = window.location.href.split('=')[1].split('&')[0];
 
-    var myOptions = {
-      method:'GET',
-      headers : { 'Authorization' : 'Bearer '+accessToken},
-      mode: 'cors',
-      cache: 'default'
-    };
+
     
     var myOptions2 = {
       mehtod: 'GET',
@@ -91,20 +88,37 @@ var i = 1;
       },
     };
     
-    var spotifySearchString = spotifySearchURL + "?q=" +"God's%20Plan" + "&type=track&limit=1";
+    var spotifySearchString = spotifySearchURL + "?q=" +"Big%20Shot" + "&type=track&limit=1";
 
     
     
-    data = fetch(spotifySearchString,myOptions2)
+    fetch(spotifySearchString,myOptions2)
     .then(dataWrappedByPromise => dataWrappedByPromise.json())
     .then(data => {
     // you can access your data here
     trackID = data.tracks.items[0].id;
     console.log(trackID);
     var spotifyTrackIdSearch = 'https://api.spotify.com/v1/tracks/' + trackID;
-    fetch(spotifyTrackIdSearch,myOptions)
-    .then(console.log(spotifyTrackIdSearch));
+  
+    console.log("This shit be the trackID "+trackID);
+    var myOptions = {
+    method:'GET',
+    headers : { 'Authorization' : 'Bearer '+accessToken},
+    id : trackID,
+    market : 'CA'
+    }
+    var prev = fetch(spotifyTrackIdSearch,myOptions)
+    .then(dataWrappedByPromise => dataWrappedByPromise.json())
+    .then(data =>{
+      var work = data.preview_url;
+      console.log(work);
+    })
+    
+    console.log(prev);
+
+    console.log(spotifyTrackIdSearch);
     console.log(external_urls.preview_url)
+    
     
     })
     
