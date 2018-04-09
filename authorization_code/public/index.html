@@ -20,7 +20,9 @@
       <a href="/login" class="btn btn-primary">Log in with Spotify</a>
       
       <video controls="" autoplay="" name="media">
-        <source src="https://p.scdn.co/mp3-preview/3784320bb46e570c7a6a52183fa4a9c40b3e71a5?cid=094a90883cba42faac7a9694612f6b4f" type="audio/mpeg">
+        //-----------------------------------MOVE THE VARIABLE AND ASSIGN IT AS THE SRC HERE----------------------------------------------------------------
+        form(action = "playSong",method="post",class="SpotifySong")
+        <source id="spotifyPlayer" type="audio/mpeg">
       </video>
 
     </div>
@@ -109,10 +111,14 @@ var i = 1;
     }
     var prev = fetch(spotifyTrackIdSearch,myOptions)
     .then(dataWrappedByPromise => dataWrappedByPromise.json())
-    .then(data =>{
+    .then(app.post('/playSong',data =>{
       var work = data.preview_url;
+      //-----------------------------------------------------------------------------------------------Need to get the value---------------------------------------------------
+      
+      document.getElementById("spotifyPlayer").src = work;
+      console.log(document.getElementById("spotifyPlayer").src);
       console.log(work);
-    })
+    }))
     
     console.log(prev);
 
