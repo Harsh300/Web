@@ -66,16 +66,19 @@ var i = 1;
     });
     //spotify search section
     var spotifySearchURL = 'https://api.spotify.com/v1/search';
+    var data = '';
+    var trackID = '';
+    
 
     console.log("Spotify");
     var accessToken = window.location.href.split('=')[1].split('&')[0];
 
-   /* var myOptions = {
+    var myOptions = {
       method:'GET',
       headers : { 'Authorization' : 'Bearer '+accessToken},
       mode: 'cors',
       cache: 'default'
-    };*/
+    };
     
     var myOptions2 = {
       mehtod: 'GET',
@@ -85,14 +88,28 @@ var i = 1;
         q : "God's%20Plan",
         type : 'track',
         limit : '1'
-      }
+      },
     };
     
     var spotifySearchString = spotifySearchURL + "?q=" +"God's%20Plan" + "&type=track&limit=1";
 
-    fetch(spotifySearchString,myOptions2)
-    .then((response)=>response.json()).then(console.log("working"));
     
+    
+    data = fetch(spotifySearchString,myOptions2)
+    .then(dataWrappedByPromise => dataWrappedByPromise.json())
+    .then(data => {
+    // you can access your data here
+    trackID = data.tracks.items[0].id;
+    console.log(trackID);
+    var spotifyTrackIdSearch = 'https://api.spotify.com/v1/tracks/' + trackID;
+    fetch(spotifyTrackIdSearch,myOptions)
+    .then(console.log(spotifyTrackIdSearch));
+    console.log(external_urls.preview_url)
+    
+    })
+    
+    //song => {
+      //var playSong =
 
     //Twitter
 
