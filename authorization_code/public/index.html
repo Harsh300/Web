@@ -18,6 +18,8 @@
   <div class="container-fluid">
     <div id="Spotify" class="SY">
       <a href="/login" class="btn btn-primary">Log in with Spotify</a>
+
+
     </div>
     <div id="youTube" class="YT">
     </div>
@@ -25,15 +27,14 @@
     <div id="SoundCloud" class="SC"></div>
     <div id="Twitter" class="Twitter">
       <div class="wb-twitter">
-            <a class="twitter-timeline"  href="https://twitter.com/hashtag/NewMusic" data-widget-id="983084056677109760">#NewMusic Tweets</a>
-            <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+        <a class="twitter-timeline"  href="https://twitter.com/hashtag/WhereWeDropping" data-widget-id="983084056677109760">#WhereWeDropping Tweets</a>
+          <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
 
     </div>
     </div>
     <div id="YoutubeResult"></div>
   </div>
 <script>
-
 var arr = [];
 var number = -1;
 var i = 1;
@@ -68,9 +69,18 @@ var i = 1;
     var accessToken = 'BQCwXat8Rg5rq_rWRSedqquuZzb4kQt7ogYtPEjeHKSQ60JSp8GobMtn6kUYtP8lEAueqHOMlDEObZ47fhE659q2Mb7WrlJaPQOPmKm8UD9OpV7rDRSuDRRDssOoznwzbWf56sk7XmWpNsV4EUYaAIOCPE';
 
     console.log("Spotify");
-    fetch(spotifySearchURL,{
-      headers:{'Authorization': 'Bearer'+ accessToken}
-    }).then((response)=>response.json()).then(data=>console.log(data));
+    var accessToken = window.location.href.split('=')[1].split('&')[0];
+
+    var myOptions = {
+      method:'GET',
+      headers : { 'Authorization' : 'Bearer '+accessToken},
+      mode: 'cors',
+      cache: 'default'
+    };
+
+    fetch(spotifySearchURL,myOptions)
+    .then((response)=>response.json()).then();
+    
 
     //Twitter
 
