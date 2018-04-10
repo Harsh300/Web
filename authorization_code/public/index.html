@@ -18,12 +18,11 @@
   <div class="container-fluid">
     <div id="Spotify" class="SY">
       <a href="/login" class="btn btn-primary">Log in with Spotify</a>
-      
-      <video controls="" autoplay="" name="media">
-        //-----------------------------------MOVE THE VARIABLE AND ASSIGN IT AS THE SRC HERE----------------------------------------------------------------
-        form(action = "playSong",method="post",class="SpotifySong")
-        <source id="spotifyPlayer" type="audio/mpeg">
-      </video>
+
+  <video id="myVideo" controls autoplay>
+    <source id="mp4_src" src="https://p.scdn.co/mp3-preview/aac0f47e54a6b34f4e329dc6a123227fe9004752?cid=094a90883cba42faac7a9694612f6b4f" type="audio/mp3">
+    <source id="ogg_src" src="https://p.scdn.co/mp3-preview/aac0f47e54a6b34f4e329dc6a123227fe9004752?cid=094a90883cba42faac7a9694612f6b4f" type="audio/mp3">
+</video>
 
     </div>
     <div id="youTube" class="YT">
@@ -72,13 +71,13 @@ var i = 1;
     //spotify search section
     var spotifySearchURL = 'https://api.spotify.com/v1/search';
     var trackID = '';
-    
+
 
     console.log("Spotify");
     var accessToken = window.location.href.split('=')[1].split('&')[0];
 
 
-    
+
     var myOptions2 = {
       mehtod: 'GET',
       headers : {'Authorization' : 'Bearer ' + accessToken},
@@ -89,11 +88,11 @@ var i = 1;
         limit : '1'
       },
     };
-    
+
     var spotifySearchString = spotifySearchURL + "?q=" +"Big%20Shot" + "&type=track&limit=1";
 
-    
-    
+
+
     fetch(spotifySearchString,myOptions2)
     .then(dataWrappedByPromise => dataWrappedByPromise.json())
     .then(data => {
@@ -101,7 +100,7 @@ var i = 1;
     trackID = data.tracks.items[0].id;
     console.log(trackID);
     var spotifyTrackIdSearch = 'https://api.spotify.com/v1/tracks/' + trackID;
-  
+
     console.log("This shit be the trackID "+trackID);
     var myOptions = {
     method:'GET',
@@ -111,23 +110,22 @@ var i = 1;
     }
     var prev = fetch(spotifyTrackIdSearch,myOptions)
     .then(dataWrappedByPromise => dataWrappedByPromise.json())
-    .then(app.post('/playSong',data =>{
+    .then(data =>{
       var work = data.preview_url;
       //-----------------------------------------------------------------------------------------------Need to get the value---------------------------------------------------
-      
-      document.getElementById("spotifyPlayer").src = work;
-      console.log(document.getElementById("spotifyPlayer").src);
-      console.log(work);
-    }))
-    
+    document.getElementById("mp4_src").src = "https://p.scdn.co/mp3-preview/3784320bb46e570c7a6a52183fa4a9c40b3e71a5?cid=094a90883cba42faac7a9694612f6b4f";
+    document.getElementById("ogg_src").src = "https://p.scdn.co/mp3-preview/3784320bb46e570c7a6a52183fa4a9c40b3e71a5?cid=094a90883cba42faac7a9694612f6b4f";
+    document.getElementById("myVideo").load();
+    })
+
     console.log(prev);
 
     console.log(spotifyTrackIdSearch);
     console.log(external_urls.preview_url)
-    
-    
+
+
     })
-    
+
     //song => {
       //var playSong =
 
