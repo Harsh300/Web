@@ -11,7 +11,7 @@
   </div>
   <div id="form">
     Search Song:
-    <input type="text" name="Search Music" id="Search" value="God's Plan - Drake" />
+    <input type="text" name="Search Music" id="Search" value="" />
     <button id="searchButton">Find</button>
   </div>
 
@@ -19,10 +19,10 @@
     <div id="Spotify" class="SY">
       <a href="/login" class="btn btn-primary">Log in with Spotify</a>
 
-  <video id="myVideo" controls autoplay>
-    <source id="mp4_src" src="https://p.scdn.co/mp3-preview/aac0f47e54a6b34f4e329dc6a123227fe9004752?cid=094a90883cba42faac7a9694612f6b4f" type="audio/mp3">
-    <source id="ogg_src" src="https://p.scdn.co/mp3-preview/aac0f47e54a6b34f4e329dc6a123227fe9004752?cid=094a90883cba42faac7a9694612f6b4f" type="audio/mp3">
-</video>
+  <video id="spotifyPlayer" controls autoplay>
+    <source id="mp3_src" src="" type="audio/mp3">
+    <source id="mp3_src2" src="" type="audio/mp3">
+  </video>
 
     </div>
     <div id="youTube" class="YT">
@@ -47,12 +47,13 @@ var i = 1;
   // handler for searching by keyword
   $('#searchButton').click(function() {
 
-    var keyword = $('#Search').val();
+    var keywordYoutube = $('#Search').val();
+    var keywordSpotify = $('#Search').val();
 
     //youtube search section
     var maxResults = 5;
     var youtubeSearchURL = 'https://www.googleapis.com/youtube/v3/search?part=id%2Csnippet&q=' +
-    escape(keyword) + '&key=AIzaSyBKl-NXWdXHsj6dCYrNRqgU5k5h_bH6Ua8';
+    escape(keywordYoutube) + '&key=AIzaSyBKl-NXWdXHsj6dCYrNRqgU5k5h_bH6Ua8';
 
     // clear any previous search results
     $('#youTube').html('');
@@ -68,69 +69,58 @@ var i = 1;
 
         });
     });
-    //spotify search section
+
+    /*---------------SPOTIFY--------------*/
     var spotifySearchURL = 'https://api.spotify.com/v1/search';
     var trackID = '';
-
-
-    console.log("Spotify");
     var accessToken = window.location.href.split('=')[1].split('&')[0];
-
-
-
-    var myOptions2 = {
+    //HTTP request to obtain TrackID with Auth
+    var request = {
       mehtod: 'GET',
       headers : {'Authorization' : 'Bearer ' + accessToken},
       dataType : 'json',
       data : {
-        q : "God's%20Plan",
         type : 'track',
         limit : '1'
       },
     };
 
-    var spotifySearchString = spotifySearchURL + "?q=" +"Big%20Shot" + "&type=track&limit=1";
+    //Formats keyword to previewURL on spotify url
+    function convertKeyword(key){
+      var convertedKeyword="";
+      convertedKeyword = key.replace(' ','%20');
+      console.log(convertKeyword);
+      return convertedKeyword;
+    }
+    //Spotify search url with formatting
+    var spotifySearchString = spotifySearchURL + "?q=" +
+    convertKeyword(keywordSpotify) + "&type=track&limit=1";
 
-
-
-    fetch(spotifySearchString,myOptions2)
+    //first fetch to get trackID
+    fetch(spotifySearchString,request)
     .then(dataWrappedByPromise => dataWrappedByPromise.json())
     .then(data => {
-    // you can access your data here
     trackID = data.tracks.items[0].id;
-    console.log(trackID);
     var spotifyTrackIdSearch = 'https://api.spotify.com/v1/tracks/' + trackID;
-
-    console.log("This shit be the trackID "+trackID);
-    var myOptions = {
+    //Second HTTP request to get previewURL to embed to page
+    var request2 = {
     method:'GET',
     headers : { 'Authorization' : 'Bearer '+accessToken},
     id : trackID,
     market : 'CA'
     }
-    var prev = fetch(spotifyTrackIdSearch,myOptions)
+    //Second fetch once trackID is acquired to fetch for previewURL
+    fetch(spotifyTrackIdSearch,request2)
     .then(dataWrappedByPromise => dataWrappedByPromise.json())
     .then(data =>{
-      var work = data.preview_url;
-      //-----------------------------------------------------------------------------------------------Need to get the value---------------------------------------------------
-    document.getElementById("mp4_src").src = "https://p.scdn.co/mp3-preview/3784320bb46e570c7a6a52183fa4a9c40b3e71a5?cid=094a90883cba42faac7a9694612f6b4f";
-    document.getElementById("ogg_src").src = "https://p.scdn.co/mp3-preview/3784320bb46e570c7a6a52183fa4a9c40b3e71a5?cid=094a90883cba42faac7a9694612f6b4f";
-    document.getElementById("myVideo").load();
+      var previewURL = data.preview_url;
+      document.getElementById("mp3_src").src = previewURL;
+      document.getElementById("mp3_src2").src = previewURL;
+      document.getElementById("spotifyPlayer").load();
+      })
     })
 
-    console.log(prev);
-
-    console.log(spotifyTrackIdSearch);
-    console.log(external_urls.preview_url)
-
-
-    })
-
-    //song => {
-      //var playSong =
-
-    //Twitter
-
+/*-----------------TWITTER----------------*/
   window.twttr = (function(d, s, id) {
   var js, fjs = d.getElementsByTagName(s)[0],
     t = window.twttr || {};
@@ -155,9 +145,6 @@ var i = 1;
 function renderSearchResultItem(item) {
     if (item.id.kind == 'youtube#video') {
       number = number + i;
-      //console.log("Making button");
-      //console.log('#linkButton'.value);
-      // OnClick LinkButton
       $('#0').unbind().click(function() {
         $('#YouTubeResult').html('');
     console.log("GOT HERE");
