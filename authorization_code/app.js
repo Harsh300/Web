@@ -6,7 +6,7 @@
  * For more information, read
  * https://developer.spotify.com/web-api/authorization-guide/#authorization_code_flow
  */
-var queryString = require('query-string');
+
 var express = require('express'); // Express web server framework
 var request = require('request'); // "Request" library
 var querystring = require('querystring');
@@ -39,9 +39,7 @@ app.use(express.static(__dirname + '/public'))
    .use(cookieParser());
 
 app.get('/login', function(req, res) {
-console.log(
-  "app.js tried login"
-)
+
   var state = generateRandomString(16);
   res.cookie(stateKey, state);
 
@@ -55,7 +53,6 @@ console.log(
       redirect_uri: redirect_uri,
       state: state
     }));
-
 });
 
 app.get('/callback', function(req, res) {

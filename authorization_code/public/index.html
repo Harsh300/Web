@@ -2,51 +2,106 @@
 <html lang="en">
 <head>
   <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  <title>Music Finder</title>
+  <style>
+#Spotify {
+  width: 90%;
+  background-color: PaleGreen;
+  border-radius: 25px;
+  margin:auto;
+  padding:20px
 
-  <title>Name TBD</title>
+}
+#login{
+  width:100%;
+  margin: 0 auto;
+}
+#spotifyPlayer{
+  width:100%;
+}
+
+#Twitter{
+  background-color: PaleTurquoise;
+  border-radius: 25px;
+  padding: 20px;
+  display: inline-block;
+
+}
+#youtube{
+  width:90%;
+  background-color: #fe4646;
+  border-radius: 25px;
+  padding:20px;
+  text-align: left;
+
+
+}
+
+#form{
+  text-align: left;
+  width:50%;
+  background-color: black;
+  border-radius:25px;
+  display:inline-block;
+  padding:20px;
+}
+
+
+</style>
 </head>
 <body>
   <div id = "PageTitle" class = "title">
-    <h3> NAME TBD</h3>
+    <h3> MUSIC FINDER </h3>
   </div>
-  <div id="form">
-    Search Song:
+
+  <div id="form" class="row">
+    <font color = "white" >Search Song:<font>
+      <font color = "black" >
     <input type="text" name="Search Music" id="Search" value="" />
-    <button id="searchButton">Find</button>
+    <button id="searchButton">Find<font></button>
   </div>
 
-  <div class="container-fluid">
+  <div class="col-md-6">
     <div id="Spotify" class="SY">
-      <a href="/login" class="btn btn-primary">Log in with Spotify</a>
+      <a id="login" href="/login" class="btn btn-primary">Log in with Spotify</a>
+      <video id="spotifyPlayer" controls autoplay>
+        <source id="mp3_src" src="" type="audio/mp3">
+          <source id="mp3_src2" src="" type="audio/mp3">
+      </video>
+    </div>
 
-  <video id="spotifyPlayer" controls autoplay>
-    <source id="mp3_src" src="" type="audio/mp3">
-    <source id="mp3_src2" src="" type="audio/mp3">
-  </video>
+    <div id="youtube" class="container-fluid">
+      <div id="youtubeResult" class = "container-fluid"></div>
+    </div>
 
-    </div>
-    <div id="youTube" class="YT">
-    </div>
-    <div id="subYoutube" class = "sYT"> </div>
-    <div id="SoundCloud" class="SC"></div>
-    <div id="Twitter" class="Twitter">
-      <div class="wb-twitter">
-        <a class="twitter-timeline"  href="https://twitter.com/hashtag/WhereWeDropping" data-widget-id="983084056677109760">#WhereWeDropping Tweets</a>
-          <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
-
-    </div>
-    </div>
-    <div id="YoutubeResult"></div>
   </div>
+    <div id="Twitter" class="col-md-6">
+      <div class="wb-twitter">
+        <a class="twitter-timeline"  href="https://twitter.com/hashtag/NewMusic" data-widget-id="983084056677109760">#NewMusic Tweets</a>
+          <script>
+          !function(d,s,id)
+          {var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';
+            if(!d.getElementById(id))
+            {js=d.createElement(s);
+              js.id=id;js.src=p+"://platform.twitter.com/widgets.js";
+              fjs.parentNode.insertBefore(js,fjs);
+            }
+          }
+          (document,"script","twitter-wjs");
+          </script>
+      </div>
+    </div>
 <script>
 var arr = [];
-var number = -1;
+var number = 0;
 var i = 1;
 
 
   // handler for searching by keyword
   $('#searchButton').click(function() {
-
+    document.getElementById('login').style.visibility="hidden";
+    number = -1;
     var keywordYoutube = $('#Search').val();
     var keywordSpotify = $('#Search').val();
 
@@ -56,24 +111,28 @@ var i = 1;
     escape(keywordYoutube) + '&key=AIzaSyBKl-NXWdXHsj6dCYrNRqgU5k5h_bH6Ua8';
 
     // clear any previous search results
-    $('#youTube').html('');
+    $('#youtube').html('');
+
     //$('#videos').html('');
 
     // Get the data from the web service and process
     $.getJSON(youtubeSearchURL, function(data) {
         $.each(data.items, function(i,item) {
             arr.push(item.id);
-            console.log(arr);
-            $('#youTube').append(renderSearchResultItem(item));
-            //$('#videos').append(renderVideoPlayback(item.id));
+
+
+            $('#youtube').append(renderSearchResultItem(item));
 
         });
     });
 
+
+
     /*---------------SPOTIFY--------------*/
     var spotifySearchURL = 'https://api.spotify.com/v1/search';
     var trackID = '';
-    var accessToken = window.location.href.split('=')[1].split('&')[0];
+    var accessToken=window.location.href.split('=')[1].split('&')[0];
+
     //HTTP request to obtain TrackID with Auth
     var request = {
       mehtod: 'GET',
@@ -117,6 +176,7 @@ var i = 1;
       document.getElementById("mp3_src").src = previewURL;
       document.getElementById("mp3_src2").src = previewURL;
       document.getElementById("spotifyPlayer").load();
+
       })
     })
 
@@ -139,65 +199,58 @@ var i = 1;
 }
 (document, "script", "twitter-wjs"));
 
+
   });
 
 
 function renderSearchResultItem(item) {
     if (item.id.kind == 'youtube#video') {
       number = number + i;
+      console.log(number);
       $('#0').unbind().click(function() {
-        $('#YouTubeResult').html('');
-    console.log("GOT HERE");
+        $('#youtube').html('');
     console.log(item.id);
     var useThis = this.value;
     var itemIdOfNumber = arr[useThis];
 
-    $('#YoutubeResult').append(renderVideoPlayback(itemIdOfNumber));
+    $('#youtube').append(renderVideoPlayback(itemIdOfNumber));
     });
     $('#1').unbind().click(function() {
-      $('#YouTubeResult').html('');
-    console.log("GOT HERE");
+      $('#youtube').html('');
     console.log(item.id);
     var useThis = this.value;
     var itemIdOfNumber = arr[useThis];
 
-    $('#YoutubeResult').append(renderVideoPlayback(itemIdOfNumber));
+    $('#youtube').append(renderVideoPlayback(itemIdOfNumber));
     });
     $('#2').unbind().click(function() {
-      $('#YouTubeResult').html('');
-    console.log("GOT HERE");
+      $('#youtube').html('');
     console.log(item.id);
     var useThis = this.value;
     var itemIdOfNumber = arr[useThis];
 
-    $('#YoutubeResult').append(renderVideoPlayback(itemIdOfNumber));
+    $('#youtube').append(renderVideoPlayback(itemIdOfNumber));
     });
     $('#3').unbind().click(function() {
-      $('#YouTubeResult').html('');
-    console.log("GOT HERE");
+      $('#youtube').html('');
     console.log(item.id);
     var useThis = this.value;
     var itemIdOfNumber = arr[useThis];
 
-    $('#YoutubeResult').append(renderVideoPlayback(itemIdOfNumber));
+    $('#youtube').append(renderVideoPlayback(itemIdOfNumber));
     });
     $('#4').unbind().click(function() {
-      $('#YouTubeResult').html('');
-    console.log("GOT HERE");
+      $('#youtube').html('');
     console.log(item.id);
+
     var useThis = this.value;
     var itemIdOfNumber = arr[useThis];
 
-    $('#YoutubeResult').append(renderVideoPlayback(itemIdOfNumber));
+    $('#youtube').append(renderVideoPlayback(itemIdOfNumber));
     });
-    //append to array!
-    //get the position of that element!
-    //use that position value as the value of the button it is creating!
-    //onlick will get the value of the button and go through the array to get to that postion and play that video
-      $('subYoutube').append('<li><a "http://www.youtube.com/v/' + item.id.videoId +
-       '">' + item.snippet.title + '</a><button id="' + number + '"; value=' + number + '>Watch this Video</button></li>');
-      return '<li><a "http://www.youtube.com/v/' + item.id.videoId +
-      '">' + item.snippet.title + '</a><button id="' + number + '"; value=' + number + '>Watch this Video</button></li>';
+
+    return '<li><a "http://www.youtube.com/v/' + item.id.videoId +
+    '">' + item.snippet.title + '</a><button id="' + number + '"; value=' + number + '>Watch this Video</button></li>';
 
     }
     else
